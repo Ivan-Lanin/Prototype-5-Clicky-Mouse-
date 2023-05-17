@@ -44,6 +44,7 @@ public class Target : MonoBehaviour
 
 
     private void OnMouseDown() {
+        return;
         if (gameManager.isGameActive && !gameManager.isPaused) {
             Destroy(gameObject);
             gameManager.UpdateScore(pointValue);
@@ -53,7 +54,13 @@ public class Target : MonoBehaviour
 
 
     private void OnMouseOver() {
-        Debug.Log("OnMouseOver");
+        if (Input.GetMouseButton(0)) {
+            if (gameManager.isGameActive && !gameManager.isPaused) {
+                Destroy(gameObject);
+                gameManager.UpdateScore(pointValue);
+                Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+            }
+        }
     }
 
 
