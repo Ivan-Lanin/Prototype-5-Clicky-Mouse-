@@ -8,14 +8,19 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private RawImage pauseImage;
+
     public List<GameObject> targets;
     private float spawnRate = 2.0f;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI livesText;
     public TextMeshProUGUI gameOverText;
     public Button restartButton;
     public bool isGameActive;
+    public bool isPaused = false;
     public GameObject titleScreen;
     private int score;
+    private int lives = 3;
 
 
     private void Start() {
@@ -25,9 +30,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SpawnTarget() {
         while (isGameActive) {
-            yield return new WaitForSeconds(spawnRate);
             int index = Random.Range(0, targets.Count);
             Instantiate(targets[index]);
+            yield return new WaitForSeconds(spawnRate);
         }
     }
 
@@ -35,6 +40,15 @@ public class GameManager : MonoBehaviour
     public void UpdateScore(int scoreToAdd) {
         score += scoreToAdd;
         scoreText.text = "Score: " + score;
+    }
+
+
+    public void UpdateLives(int livesToExtract) {
+        lives -= livesToExtract;
+        livesText.text = "Lives: " + lives;
+        if (lives <= 0) {
+            GameOver();
+        }
     }
 
 
@@ -56,6 +70,31 @@ public class GameManager : MonoBehaviour
         spawnRate /= difficulty;
         score = 0;
         UpdateScore(0);
+        UpdateLives(0);
         titleScreen.gameObject.SetActive(false);
+    }
+
+
+    public void SetPause() {
+        if (!isPaused) {
+            PauseGame();
+            isPaused = true;
+            pauseImage.gameObject.SetActive(true);
+        }
+        else {
+            ResumeGame();
+            isPaused = false;
+            pauseImage.gameObject.SetActive(false);
+        }
+    }
+
+
+    public void PauseGame() {
+        Time.timeScale = 0;
+    }
+
+
+    public void ResumeGame() {
+        Time.timeScale = 1;
     }
 }

@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
     private GameManager gameManager;
 
     [SerializeField] private float minSpeed = 12;
-    [SerializeField] private float maxSpeed = 16;
+    [SerializeField] private float maxSpeed = 14;
     [SerializeField] private float maxTorque = 10;
     [SerializeField] private float xRange = 4;
     [SerializeField] private float ySpawnPos = -2;
@@ -44,16 +44,22 @@ public class Target : MonoBehaviour
 
 
     private void OnMouseDown() {
-        if (gameManager.isGameActive) {
+        if (gameManager.isGameActive && !gameManager.isPaused) {
             Destroy(gameObject);
             gameManager.UpdateScore(pointValue);
             Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
         }
     }
 
+
+    private void OnMouseOver() {
+        Debug.Log("OnMouseOver");
+    }
+
+
     private void OnTriggerEnter(Collider other) {
-        if (!gameObject.CompareTag("Bad")) {
-            gameManager.GameOver();
+        if (!gameObject.CompareTag("Bad") && gameManager.isGameActive) {
+            gameManager.UpdateLives(1);
         }
         Destroy(gameObject);
     }
